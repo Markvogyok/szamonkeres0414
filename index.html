@@ -4,10 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Számonkérés</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <h1>Élelmiszeráruház</h1>
+    <input type="file" id="csvInput" accept=".csv">
+    <button id="osszesTermekGomb" disabled>Termékek megjelenítése</button>
+    <button id="vasarlasGomb" disabled>Vásárlás</button>
+    <div id="termekLista"></div>
+    <div id="vasarlasEredmeny"></div>
+    
     <script>
-        class Termek {
+         class Termek {
             constructor(nev, ar, raktarKeszlet, kategoria) {
                 this.nev = nev;
                 this.ar = ar;
@@ -51,6 +59,7 @@
                 }
             }
         }
+
         const aruhaz = new Aruhaz();
 
         document.getElementById("csvInput").addEventListener("change", function (event) {
@@ -68,7 +77,6 @@
                     });
                     document.getElementById("osszesTermekGomb").disabled = false;
                     document.getElementById("vasarlasGomb").disabled = false;
-                    alert("Termékek sikeresen importálva!");
                 };
                 reader.readAsText(file);
             }
