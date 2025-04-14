@@ -6,6 +6,86 @@
     <title>Számonkérés</title>
 </head>
 <body>
-    
+    <script>
+        class Termek {
+            constructor(nev, ar, raktarKeszlet, kategoria) {
+                this.nev = nev;
+                this.ar = ar;
+                this.raktarKeszlet = raktarKeszlet;
+                this.kategoria = kategoria;
+            }
+
+            megjelenit() {
+                return `${this.nev}, ${this.ar}, ${this.raktarKeszlet}, ${this.kategoria}`;
+            }
+
+            csokkentRaktarKeszlet() {
+                if (this.raktarKeszlet > 0) {
+                    this.raktarKeszlet--;
+                    return `${this.nev} raktárkészlet: ${this.raktarKeszlet}`;
+                } else {
+                    return `${this.nev} nincsen raktáron!`;
+                }
+            }
+        }
+
+        class Aruhaz {
+            constructor() {
+                this.termekek = [];
+            }
+
+            termekHozzaad(termek) {
+                this.termekek.push(termek);
+            }
+
+            osszesTermekMegjelenitese() {
+                return this.termekek.map(termek => termek.megjelenit()).join("<br>");
+            }
+
+            termekVasarlas(nev) {
+                const termek = this.termekek.find(t => t.nev === nev);
+                if (termek) {
+                    return termek.csokkentRaktarKeszlet();
+                } else {
+                    return `A ${nev} nem található!`;
+                }
+            }
+        }
+        const aruhaz = new Aruhaz();
+
+        document.getElementById("csvInput").addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const csvData = e.target.result;
+                    const rows = csvData.split("\n").map(row => row.trim()).filter(row => row.length > 0);
+                    rows.forEach((row, index) => {
+                        if (index > 0) {
+                            const [nev, ar, raktarKeszlet, kategoria] = row.split(",").map(cell => cell.trim());
+                            aruhaz.termekHozzaad(new Termek(nev, parseInt(ar), parseInt(raktarKeszlet), kategoria));
+                        }
+                    });
+                    document.getElementById("osszesTermekGomb").disabled = false;
+                    document.getElementById("vasarlasGomb").disabled = false;
+                    alert("Termékek sikeresen importálva!");
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        document.getElementById("osszesTermekGomb").addEventListener("click", () => {
+            const termekLista = document.getElementById("termekLista");
+            termekLista.innerHTML = `<h2>Termékek</h2>${aruhaz.osszesTermekMegjelenitese()}`
+        });
+
+        document.getElementById("vasarlasGomb").addEventListener("click", () => {
+            const vasarlasEredmeny = document.getElementById("vasarlasEredmeny");
+            const termekNev = prompt("Add meg a vásárolni kívánt terméket:");
+            if (termekNev) {
+                vasarlasEredmeny.innerHTML = `<h2>A vásárlás eredménye</h2>${aruhaz.termekVasarlas(termekNev)}`;
+            }
+        });
+    </script>
 </body>
 </html>
