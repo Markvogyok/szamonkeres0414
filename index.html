@@ -11,6 +11,7 @@
     <input type="file" id="csvInput" accept=".csv">
     <button id="osszesTermekGomb" disabled>Termékek megjelenítése</button>
     <button id="vasarlasGomb" disabled>Vásárlás</button>
+    <button id="szuresGomb">Szűrés</button>
     <div id="termekLista"></div>
     <div id="vasarlasEredmeny"></div>
     
@@ -93,6 +94,15 @@
             if (termekNev) {
                 vasarlasEredmeny.innerHTML = `<h2>A vásárlás eredménye</h2>${aruhaz.termekVasarlas(termekNev)}`;
             }
+        });
+
+        document.getElementById("szuresGomb").addEventListener("click", () => {
+            const termekLista = document.getElementById("termekLista");
+            const termekSzures = prompt("Add meg a szűrési formát:");
+            if (termekSzures == Termek.kategoria){
+                termekLista.innerHTML = aruhaz.osszesTermekMegjelenitese();
+            }
+            
         });
     </script>
 </body>
